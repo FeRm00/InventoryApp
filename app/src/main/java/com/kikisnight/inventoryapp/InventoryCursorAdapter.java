@@ -11,9 +11,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.TextView;
+import static android.R.attr.id;
 
 import com.kikisnight.inventoryapp.data.InventoryContract.InventoryEntry;
-
 
 
 /**

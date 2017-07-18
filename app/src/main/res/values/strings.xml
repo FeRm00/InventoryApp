@@ -60,4 +60,11 @@
     <string name="detail_activity">Detail Activity</string>
     <string name="supplier">Supplier:</string>
 
+    <!-- Text for the activity_detail.xml -->
+    <string name="category_manager">Stock Management</string>
+    <string name="sell_product">Sell a unit</string>
+    <string name="action_sell">Sell</string>
+    <string name="order_product">Order New Units</string>
+    <string name="action_order">Order</string>
+
 </resources>

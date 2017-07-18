@@ -5,4 +5,7 @@
 
     <!-- Common margin value used throughout the app -->
     <dimen name="activity_margin">16dp</dimen>
+
+    <!-- Text Dimensions -->
+    <dimen name="tittle">20sp</dimen>
 </resources>
