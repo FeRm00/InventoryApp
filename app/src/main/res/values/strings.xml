@@ -1,0 +1,63 @@
+<resources>
+    <string name="app_name">Inventory App</string>
+
+    <!-- Title text for the empty view, which describes the empty inventory [CHAR LIMIT=50] -->
+    <string name="empty_view_title_text">No products in the inventory.</string>
+
+    <!-- Subtitle text for the empty view that prompts the user to add a new product to the
+    inventory [CHAR LIMIT=50] -->
+    <string name="empty_view_subtitle_text">Please, add new product to the inventory</string>
+
+
+    <!-- Text for the activity_editor.xml -->
+    <!-- Name -->
+    <string name="category_name">Product name:</string>
+    <string name="hint_product_name">Name</string>
+
+    <!-- Price -->
+    <string name="category_price">Price:</string>
+    <string name="hint_product_price">0</string>
+
+    <!-- Supplier -->
+    <string name="category_supplier">Supplier:</string>
+    <string name="hint_product_supplier">Supplier</string>
+
+    <!--Email -->
+    <string name="category_email">Supplier\'s Email:</string>
+    <string name="hint_product_email">Email</string>
+
+    <!--Quantity -->
+    <string name="category_quantity">Current Stock</string>
+    <string name="hint_product_quantity">0</string>
+
+    <!-- Text for the EditorActivity -->
+    <string name="editor_activity_title_new_product">New Product</string>
+    <string name="editor_activity_title_edit_product">Edit Product</string>
+    <string name="editor_insert_product_failed">Failed inserting a new product</string>
+    <string name="editor_insert_product_successful">Product inserted successfully</string>
+    <string name="editor_update_product_failed">Update product failed</string>
+    <string name="editor_update_product_successful">Update product successful</string>
+    <string name="discard">Discard</string>
+    <string name="keep_editing">Keep editing</string>
+    <string name="delete_dialog_msg">Delete this product from the inventory?</string>
+    <string name="delete">Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="unsaved_changes_dialog_msg">Discard your changes and quit editing?</string>
+    <string name="editor_delete_product_failed">Error with deleting product</string>
+    <string name="editor_delete_product_successful">Product delete from inventory</string>
+
+    <!-- Text for the menu_editor.xml -->
+    <string name="action_save">Save</string>
+    <string name="action_delete">Delete</string>
+
+    <!-- Text for the menu_inventory.xml -->
+    <string name="action_delete_all_entries">Delete All Products</string>
+    <string name="delete_all_products_dialog_msg">Do you want to delete all products?</string>
+
+    <!-- Text for InventoryActivity -->
+    <string name="price">Price of the product:</string>
+    <string name="stock">Stock:</string>
+    <string name="detail_activity">Detail Activity</string>
+    <string name="supplier">Supplier:</string>
+
+</resources>
