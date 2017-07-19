@@ -1,6 +1,7 @@
 package com.kikisnight.inventoryapp;
 
 import android.app.LoaderManager;
+import android.content.ContentValues;
 import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
@@ -8,7 +9,9 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kikisnight.inventoryapp.data.InventoryContract.InventoryEntry;
 
@@ -60,25 +63,27 @@ public class DetailActivity extends AppCompatActivity implements
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_detail);
 
-            // Receive Uri data from intent
-            Intent intent = getIntent();
-            mCurrentProductUri = intent.getData();
-            if (mCurrentProductUri != null) {
-                // Kick off LoaderManager
-                getLoaderManager().initLoader(DETAIL_INVENTORY_LOADER, null, this);
-            }
-
-            // Find all relevant views that we will need to read user input from
+            // Find all relevant views that we will need to write all the input data
             mNameTextView = (TextView) findViewById(R.id.view_product_name);
             mPriceTextView = (TextView) findViewById(R.id.view_product_price);
             mSupplierTextView = (TextView) findViewById(R.id.view_product_supplier);
             mEmailTextView = (TextView) findViewById(R.id.view_product_email);
             mQuantityTextView = (TextView) findViewById(R.id.view_product_quantity);
 
-    }
+            // Receive Uri data from intent
+            Intent intent = getIntent();
+            mCurrentProductUri = intent.getData();
+            if (mCurrentProductUri != null) {
+                Toast.makeText(this, "Starting Loader", Toast.LENGTH_SHORT).show();
+                // Kick off LoaderManager
+                getLoaderManager().initLoader(DETAIL_INVENTORY_LOADER, null, this);
+            }
+
+        }
 
         @Override
         public Loader<Cursor> onCreateLoader ( int id, Bundle args){
+            Toast.makeText(this, "onCreateLoader", Toast.LENGTH_SHORT).show();
             String[] projection = {
                     InventoryEntry._ID,
                     InventoryEntry.COLUMN_INVENTORY_NAME,
@@ -97,6 +102,7 @@ public class DetailActivity extends AppCompatActivity implements
 
         @Override
         public void onLoadFinished (Loader < Cursor > loader, Cursor cursor){
+            Toast.makeText(this, "onLoadFinished", Toast.LENGTH_SHORT).show();
             // Proceed with moving to the first row of the cursor and reading data from it
             // (This should be the only row in the cursor)
             if (cursor.moveToFirst()) {
@@ -113,6 +119,8 @@ public class DetailActivity extends AppCompatActivity implements
                 String supplier = cursor.getString(supplierColumnIndex);
                 String email = cursor.getString(emailColumnIndex);
                 int quantity = cursor.getInt(quantityColumnIndex);
+
+                Toast.makeText(this, name, Toast.LENGTH_SHORT).show();
 
                 // Update the views on the screen with the values from the database
                 mNameTextView.setText(name);
@@ -131,5 +139,35 @@ public class DetailActivity extends AppCompatActivity implements
             mSupplierTextView.setText("");
             mEmailTextView.setText("");
             mQuantityTextView.setText("");
+        }
+
+        /*
+        / Sell a unit of the product and decrease de quantity by 1.
+         */
+        public void sellStock (View view) {
+        int newStock = Integer.parseInt(mQuantityTextView.getText().toString());
+
+            if (newStock > 0) {
+                newStock = newStock - 1;
+            } else {
+                newStock = 0;
+            }
+            //Update in the data base the new value
+            ContentValues values = new ContentValues();
+            values.put(InventoryEntry.COLUMN_INVENTORY_QUANTITY, newStock);
+            int numRowsUpdated = getContentResolver().update(mCurrentProductUri, values, null, null);
+
+        }
+        /*
+        * Order a new stock to the supplier with the email saved in the inventory data base.
+        */
+         public void orderStock (View view) {
+             Intent intent = new Intent(Intent.ACTION_SEND);
+             intent.setData(Uri.parse("mailto:"));
+             intent.setType("text/plain");
+             intent.putExtra(Intent.EXTRA_EMAIL, mEmailTextView.getText().toString());
+             intent.putExtra(Intent.EXTRA_SUBJECT, mSupplierTextView.getText().toString());
+
+             startActivity(Intent.createChooser(intent, "Send Email"));
         }
     }

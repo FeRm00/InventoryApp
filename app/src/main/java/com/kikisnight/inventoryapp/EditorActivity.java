@@ -131,59 +131,76 @@ public class EditorActivity extends AppCompatActivity implements
             return;
         }
 
-        // Create a ContentValues object where column names are the keys,
-        // and products fo the inventory attributes from the editor are the values.
-        ContentValues values = new ContentValues();
-        values.put(InventoryEntry.COLUMN_INVENTORY_NAME, nameString);
-        values.put(InventoryEntry.COLUMN_INVENTORY_SUPPLIER, supplierString);
-        values.put(InventoryEntry.COLUMN_INVENTORY_EMAIL, emailString);
-        // If the price or quantity is not provided by the user, don't try to parse the string into an
-        // integer value. Use 0 by default.
-        int price = 0;
-        if (!TextUtils.isEmpty(priceString)) {
-            price = Integer.parseInt(priceString);
-        }
-        values.put(InventoryEntry.COLUMN_INVENTORY_PRICE, price);
-
-        int quantity = 0;
-        if (!TextUtils.isEmpty(quantityString)) {
-            quantity = Integer.parseInt(quantityString);
-        }
-        values.put(InventoryEntry.COLUMN_INVENTORY_QUANTITY, quantity);
-
-        // Determine if this is a new or existing product by checking if mCurrentProductUri is null or not
-        if (mCurrentProductUri == null) {
-            // This is a NEW product, so insert a new product into the provider,
-            // returning the content URI for the new product.
-            Uri newUri = getContentResolver().insert(InventoryEntry.CONTENT_URI, values);
-
-            // Show a toast message depending on whether or not the insertion was successful.
-            if (newUri == null) {
-                // If the new content URI is null, then there was an error with insertion.
-                Toast.makeText(this, getString(R.string.editor_insert_product_failed),
-                        Toast.LENGTH_SHORT).show();
-            } else {
-                // Otherwise, the insertion was successful and we can display a toast.
-                Toast.makeText(this, getString(R.string.editor_insert_product_successful),
-                        Toast.LENGTH_SHORT).show();
-            }
+        //Check if all fields are not empty before to create a ContentValue
+        if (TextUtils.isEmpty(nameString)) {
+            Toast.makeText(this, getString(R.string.toast_no_name_add), Toast.LENGTH_SHORT).show();
+        } else if (TextUtils.isEmpty(priceString)) {
+            Toast.makeText(this, getString(R.string.toast_no_price_add), Toast.LENGTH_SHORT).show();
+        }else if (TextUtils.isEmpty(supplierString)) {
+            Toast.makeText(this, getString(R.string.toast_no_supplier_add), Toast.LENGTH_SHORT).show();
+        }else if (TextUtils.isEmpty(emailString)) {
+            Toast.makeText(this, getString(R.string.toast_no_email_add), Toast.LENGTH_SHORT).show();
+        }else if (TextUtils.isEmpty(quantityString)) {
+            Toast.makeText(this, getString(R.string.toast_no_quantity_add), Toast.LENGTH_SHORT).show();
         } else {
-            // Otherwise this is an EXISTING product in the inventory, so update the product with
-            // content URI: mCurrentProductUri and pass in the new ContentValues. Pass in null for
-            // the selection and selection args because mCurrentProductUri will already identify
-            // the correct row in the database that we want to modify.
-            int rowsAffected = getContentResolver().update(mCurrentProductUri, values, null, null);
 
-            // Show a toast message depending on whether or not the update was successful.
-            if (rowsAffected == 0) {
-                // If no rows were affected, then there was an error with the update.
-                Toast.makeText(this, getString(R.string.editor_update_product_failed),
-                        Toast.LENGTH_SHORT).show();
-            } else {
-                // Otherwise, the update was successful and we can display a toast.
-                Toast.makeText(this, getString(R.string.editor_update_product_successful),
-                        Toast.LENGTH_SHORT).show();
+            // Create a ContentValues object where column names are the keys,
+            // and products fo the inventory attributes from the editor are the values.
+            ContentValues values = new ContentValues();
+            values.put(InventoryEntry.COLUMN_INVENTORY_NAME, nameString);
+            values.put(InventoryEntry.COLUMN_INVENTORY_SUPPLIER, supplierString);
+            values.put(InventoryEntry.COLUMN_INVENTORY_EMAIL, emailString);
+            // If the price or quantity is not provided by the user, don't try to parse the string into an
+            // integer value. Use 0 by default.
+            int price = 0;
+            if (!TextUtils.isEmpty(priceString)) {
+                price = Integer.parseInt(priceString);
             }
+            values.put(InventoryEntry.COLUMN_INVENTORY_PRICE, price);
+
+            int quantity = 0;
+            if (!TextUtils.isEmpty(quantityString)) {
+                quantity = Integer.parseInt(quantityString);
+            }
+            values.put(InventoryEntry.COLUMN_INVENTORY_QUANTITY, quantity);
+
+            // Determine if this is a new or existing product by checking if mCurrentProductUri is null or not
+            if (mCurrentProductUri == null) {
+                // This is a NEW product, so insert a new product into the provider,
+                // returning the content URI for the new product.
+                Uri newUri = getContentResolver().insert(InventoryEntry.CONTENT_URI, values);
+
+                // Show a toast message depending on whether or not the insertion was successful.
+                if (newUri == null) {
+                    // If the new content URI is null, then there was an error with insertion.
+                    Toast.makeText(this, getString(R.string.editor_insert_product_failed),
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    // Otherwise, the insertion was successful and we can display a toast.
+                    Toast.makeText(this, getString(R.string.editor_insert_product_successful),
+                            Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                // Otherwise this is an EXISTING product in the inventory, so update the product with
+                // content URI: mCurrentProductUri and pass in the new ContentValues. Pass in null for
+                // the selection and selection args because mCurrentProductUri will already identify
+                // the correct row in the database that we want to modify.
+                int rowsAffected = getContentResolver().update(mCurrentProductUri, values, null, null);
+
+                // Show a toast message depending on whether or not the update was successful.
+                if (rowsAffected == 0) {
+                    // If no rows were affected, then there was an error with the update.
+                    Toast.makeText(this, getString(R.string.editor_update_product_failed),
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    // Otherwise, the update was successful and we can display a toast.
+                    Toast.makeText(this, getString(R.string.editor_update_product_successful),
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            // Exit activity
+            finish();
         }
     }
 
@@ -214,8 +231,6 @@ public class EditorActivity extends AppCompatActivity implements
             case R.id.action_save:
                 // Save product to database
                 saveProduct();
-                // Exit activity
-                finish();
                 return true;
             // Respond to a click on the "Delete" menu option
             case R.id.action_delete:

@@ -19,9 +19,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import com.kikisnight.inventoryapp.data.InventoryContract.InventoryEntry;
 
+
 /**
  * Displays list of products from the inventory that were entered and stored in the app.
  */
+
 public class InventoryActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
 
     private static final int INVENTORY_LOADER = 0;
@@ -42,6 +44,7 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
                 startActivity(intent);
             }
         });
+
 
         //Kick off the ListView
         startListView();

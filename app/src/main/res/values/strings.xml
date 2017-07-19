@@ -45,6 +45,11 @@
     <string name="unsaved_changes_dialog_msg">Discard your changes and quit editing?</string>
     <string name="editor_delete_product_failed">Error with deleting product</string>
     <string name="editor_delete_product_successful">Product delete from inventory</string>
+    <string name="toast_no_name_add">Name is required</string>
+    <string name="toast_no_price_add">Price is required</string>
+    <string name="toast_no_supplier_add">Supplier is required</string>
+    <string name="toast_no_email_add">Email is required</string>
+    <string name="toast_no_quantity_add">Quantity is required</string>
 
     <!-- Text for the menu_editor.xml -->
     <string name="action_save">Save</string>
@@ -66,5 +71,6 @@
     <string name="action_sell">Sell</string>
     <string name="order_product">Order New Units</string>
     <string name="action_order">Order</string>
+
 
 </resources>

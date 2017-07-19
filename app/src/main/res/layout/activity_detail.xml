@@ -22,7 +22,8 @@
         <TextView
             android:id="@+id/view_product_name"
             android:inputType="textCapWords"
-            style="@style/EditorFieldStyle" />
+            style="@style/EditorFieldStyle"
+            android:text=""/>
 
     </LinearLayout>
 
@@ -119,6 +120,8 @@
                 android:text="@string/sell_product"/>
 
             <Button
+                android:id="@+id/sell_stock"
+                android:onClick="sellStock"
                 style="@style/ButtonStyle"
                 android:background="@color/colorPrimaryLight"
                 android:text="@string/action_sell"/>
@@ -138,6 +141,8 @@
                 android:text="@string/order_product" />
 
             <Button
+                android:id="@+id/order_stock"
+                android:onClick="orderStock"
                 style="@style/ButtonStyle"
                 android:background="@color/colorPrimaryLight"
                 android:text="@string/action_order"/>
