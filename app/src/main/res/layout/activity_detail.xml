@@ -99,12 +99,12 @@
         android:orientation="vertical">
 
         <TextView
+            style="@style/CategoryStyle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            style="@style/CategoryStyle"
             android:layout_margin="@dimen/activity_margin"
-            android:textSize="@dimen/tittle"
-            android:text="@string/category_manager"/>
+            android:text="@string/category_manager"
+            android:textSize="@dimen/tittle" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -112,45 +112,99 @@
             android:layout_margin="@dimen/activity_margin"
             android:orientation="horizontal">
 
-            <TextView
-                style="@style/CategoryStyle"
-                android:gravity="right"
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
                 android:layout_weight="3"
-                android:layout_gravity="center_horizontal"
-                android:text="@string/sell_product"/>
+                android:orientation="vertical">
 
-            <Button
-                android:id="@+id/sell_stock"
-                android:onClick="sellStock"
-                style="@style/ButtonStyle"
-                android:background="@color/colorPrimaryLight"
-                android:text="@string/action_sell"/>
+                <TextView
+                    style="@style/CategoryStyle"
+                    android:layout_width="match_parent"
+                    android:gravity="right"
+                    android:text="@string/adjust_stock" />
+
+                <TextView
+                    style="@style/CategoryStyle"
+                    android:layout_width="match_parent"
+                    android:gravity="right"
+                    android:text="@string/switch_mode"/>
+
+                <Switch
+                    android:id="@+id/switchAdjust"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:onClick="stateMessage"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="3"
+                android:orientation="vertical">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/activity_margin">
+
+                    <Button
+                        style="@style/smallButtons"
+                        android:onClick="actionDecrease"
+                        android:text="@string/minus" />
+
+                    <TextView
+                        android:id="@+id/view_adjust_stock"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:text="0" />
+
+                    <Button
+                        style="@style/smallButtons"
+                        android:onClick="actionIncrease"
+                        android:text="@string/plus" />
+                </LinearLayout>
+
+                <Button
+                    android:id="@+id/adjust_stock"
+                    style="@style/ButtonStyle"
+                    android:background="@color/colorPrimaryLight"
+                    android:onClick="adjustStock"
+                    android:text="@string/action_adjust" />
+            </LinearLayout>
 
         </LinearLayout>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/activity_margin"
+            android:layout_marginLeft="@dimen/activity_margin"
+            android:layout_marginRight="@dimen/activity_margin"
             android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/textView"
                 style="@style/CategoryStyle"
+                android:layout_gravity="center_horizontal"
                 android:layout_weight="3"
                 android:gravity="right"
                 android:text="@string/order_product" />
 
             <Button
                 android:id="@+id/order_stock"
-                android:onClick="orderStock"
                 style="@style/ButtonStyle"
+                android:layout_width="0dp"
+                android:layout_weight="3"
                 android:background="@color/colorPrimaryLight"
-                android:text="@string/action_order"/>
+                android:onClick="sendEmail"
+                android:text="@string/action_order" />
 
         </LinearLayout>
 
     </LinearLayout>
-
-
 
 </LinearLayout>

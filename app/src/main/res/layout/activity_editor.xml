@@ -53,6 +53,7 @@
                 style="@style/EditorFieldStyle" />
 
         </LinearLayout>
+
     </LinearLayout>
 
     <!-- Supplier of the product -->
@@ -79,6 +80,7 @@
                 style="@style/EditorFieldStyle" />
 
         </LinearLayout>
+
     </LinearLayout>
 
     <!-- Supplier's email -->
@@ -105,6 +107,7 @@
                 style="@style/EditorFieldStyle" />
 
         </LinearLayout>
+
     </LinearLayout>
 
     <!-- Quantity of the product -->
@@ -132,6 +135,19 @@
                 style="@style/EditorFieldStyle" />
 
         </LinearLayout>
+
     </LinearLayout>
+
+    <Button
+        android:id="@+id/add_image_product"
+        android:onClick="addImage"
+        style="@style/ButtonStyle"
+        android:layout_margin="@dimen/activity_margin"
+        android:text="@string/button_add_image"/>
+
+    <ImageView
+        android:id="@+id/display_image_product"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>

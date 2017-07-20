@@ -39,11 +39,23 @@
     <!-- Style for the Buttons -->
     <style name="ButtonStyle">
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:layout_width">0dp</item>
-        <item name="android:layout_weight">3</item>
+        <item name="android:layout_width">match_parent</item>
         <item name="android:textAllCaps">true</item>
         <item name="android:background">@color/colorPrimaryLight</item>
         <item name="android:textColor">@color/colorPrimaryDark</item>
+    </style>
+
+    <!-- Style for + and - buttons -->
+    <style name="smallButtons" parent="ButtonStyle">
+        <item name="android:layout_height">@dimen/squareButton</item>
+        <item name="android:layout_width">@dimen/squareButton</item>
+    </style>
+
+    <!-- Style for ListView Buttons -->
+    <style name="ListViewButton">
+        <item name="android:layout_width">40dp</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:backgroundTint">@color/colorPrimaryDark</item>
     </style>
 
 </resources>

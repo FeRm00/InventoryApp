@@ -86,6 +86,13 @@ public final class InventoryContract {
         public final static String COLUMN_INVENTORY_QUANTITY = "quantity";
 
         /**
+         * Image for each product storage
+         *
+         * Type: TEXT
+         */
+        public final static String COLUMN_INVENTORY_IMAGE = "image";
+
+        /**
          * The MIME type of the {@link #CONTENT_URI} for a list of products in the inventory.
          */
         public static final String CONTENT_LIST_TYPE =
@@ -96,6 +103,5 @@ public final class InventoryContract {
          */
         public static final String CONTENT_ITEM_TYPE =
                 ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_INVENTORY;
-
     }
 }

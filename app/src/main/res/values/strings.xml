@@ -30,6 +30,8 @@
     <string name="category_quantity">Current Stock</string>
     <string name="hint_product_quantity">0</string>
 
+    <string name="button_add_image">Add Image</string>
+
     <!-- Text for the EditorActivity -->
     <string name="editor_activity_title_new_product">New Product</string>
     <string name="editor_activity_title_edit_product">Edit Product</string>
@@ -45,11 +47,12 @@
     <string name="unsaved_changes_dialog_msg">Discard your changes and quit editing?</string>
     <string name="editor_delete_product_failed">Error with deleting product</string>
     <string name="editor_delete_product_successful">Product delete from inventory</string>
-    <string name="toast_no_name_add">Name is required</string>
-    <string name="toast_no_price_add">Price is required</string>
-    <string name="toast_no_supplier_add">Supplier is required</string>
-    <string name="toast_no_email_add">Email is required</string>
-    <string name="toast_no_quantity_add">Quantity is required</string>
+    <string name="toast_no_name_added">Name is required</string>
+    <string name="toast_no_price_added">Price is required</string>
+    <string name="toast_no_supplier_added">Supplier is required</string>
+    <string name="toast_no_email_added">Email is required</string>
+    <string name="toast_no_quantity_added">Quantity is required</string>
+    <string name="toast_no_image_added">Image is required</string>
 
     <!-- Text for the menu_editor.xml -->
     <string name="action_save">Save</string>
@@ -67,10 +70,17 @@
 
     <!-- Text for the activity_detail.xml -->
     <string name="category_manager">Stock Management</string>
-    <string name="sell_product">Sell a unit</string>
-    <string name="action_sell">Sell</string>
+    <string name="adjust_stock">Adjust Stock</string>
+    <string name="action_adjust">Adjust</string>
     <string name="order_product">Order New Units</string>
     <string name="action_order">Order</string>
+    <string name="plus">+</string>
+    <string name="minus">-</string>
+    <string name="switch_mode">Decrease / Increase</string>
 
+    <!-- Text for the DetailActivity -->
+    <string name="toast_invalid_quantity">The quantity cannot be less than 0 units</string>
+    <string name="switch_increase">Increase the quantity of the products</string>
+    <string name="switch_decrease">Decrease the quantity of the products</string>
 
 </resources>

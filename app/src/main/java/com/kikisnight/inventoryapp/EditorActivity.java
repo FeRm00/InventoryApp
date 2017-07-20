@@ -8,8 +8,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -17,10 +20,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.kikisnight.inventoryapp.data.InventoryContract.InventoryEntry;
+
+import static android.net.Uri.parse;
 
 /**
  * Allows user to create a new product or edit an existing one.
@@ -30,6 +37,9 @@ public class EditorActivity extends AppCompatActivity implements
 
     /** Identifier for the inventory data loader */
     private static final int EXISTING_INVENTORY_LOADER = 0;
+
+    /** Identifier for the image loader */
+    private static final int IMAGE_CODE = 0;
 
     /** Content URI for the existing product (null if it's a new product) */
     private Uri mCurrentProductUri;
@@ -48,6 +58,12 @@ public class EditorActivity extends AppCompatActivity implements
 
     /** EditText field to enter the product's quantity */
     private EditText mQuantityEditText;
+
+    /** ImageView to display the product's image */
+    private ImageView mProductImageView;
+
+    /** Uri of the ImageView to save the path */
+    private Uri mImageUri;
 
     /** Boolean flag that keeps track of whether the product has been edited (true) or not (false) */
     private boolean mProductHasChanged = false;
@@ -97,6 +113,7 @@ public class EditorActivity extends AppCompatActivity implements
         mSupplierEditText = (EditText) findViewById(R.id.edit_product_supplier);
         mEmailEditText = (EditText) findViewById(R.id.edit_product_email);
         mQuantityEditText = (EditText) findViewById(R.id.edit_product_quantity);
+        mProductImageView = (ImageView) findViewById(R.id.display_image_product);
 
         // Setup OnTouchListeners on all the input fields, so we can determine if the user
         // has touched or modified them. This will let us know if there are unsaved changes
@@ -120,6 +137,9 @@ public class EditorActivity extends AppCompatActivity implements
         String emailString = mEmailEditText.getText().toString().trim();
         String quantityString = mQuantityEditText.getText().toString().trim();
 
+        //Path of the image to save the location in the data base
+        String imagePath;
+
         // Check if this is supposed to be a new product
         // and check if all the fields in the editor are blank
         if (mCurrentProductUri == null &&
@@ -133,16 +153,22 @@ public class EditorActivity extends AppCompatActivity implements
 
         //Check if all fields are not empty before to create a ContentValue
         if (TextUtils.isEmpty(nameString)) {
-            Toast.makeText(this, getString(R.string.toast_no_name_add), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_no_name_added), Toast.LENGTH_SHORT).show();
         } else if (TextUtils.isEmpty(priceString)) {
-            Toast.makeText(this, getString(R.string.toast_no_price_add), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_no_price_added), Toast.LENGTH_SHORT).show();
         }else if (TextUtils.isEmpty(supplierString)) {
-            Toast.makeText(this, getString(R.string.toast_no_supplier_add), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_no_supplier_added), Toast.LENGTH_SHORT).show();
         }else if (TextUtils.isEmpty(emailString)) {
-            Toast.makeText(this, getString(R.string.toast_no_email_add), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_no_email_added), Toast.LENGTH_SHORT).show();
         }else if (TextUtils.isEmpty(quantityString)) {
-            Toast.makeText(this, getString(R.string.toast_no_quantity_add), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getString(R.string.toast_no_quantity_added), Toast.LENGTH_SHORT).show();
+        } else if (mImageUri == null) {
+            mProductImageView.requestFocus();
+            Toast.makeText(this, getString(R.string.toast_no_image_added), Toast.LENGTH_SHORT).show();
         } else {
+
+            //Save the path of the Uri Image to a string to be stored in the data base
+            imagePath = mImageUri.toString();
 
             // Create a ContentValues object where column names are the keys,
             // and products fo the inventory attributes from the editor are the values.
@@ -150,6 +176,7 @@ public class EditorActivity extends AppCompatActivity implements
             values.put(InventoryEntry.COLUMN_INVENTORY_NAME, nameString);
             values.put(InventoryEntry.COLUMN_INVENTORY_SUPPLIER, supplierString);
             values.put(InventoryEntry.COLUMN_INVENTORY_EMAIL, emailString);
+            values.put(InventoryEntry.COLUMN_INVENTORY_IMAGE, imagePath);
             // If the price or quantity is not provided by the user, don't try to parse the string into an
             // integer value. Use 0 by default.
             int price = 0;
@@ -301,7 +328,8 @@ public class EditorActivity extends AppCompatActivity implements
                 InventoryEntry.COLUMN_INVENTORY_PRICE,
                 InventoryEntry.COLUMN_INVENTORY_SUPPLIER,
                 InventoryEntry.COLUMN_INVENTORY_EMAIL,
-                InventoryEntry.COLUMN_INVENTORY_QUANTITY };
+                InventoryEntry.COLUMN_INVENTORY_QUANTITY,
+                InventoryEntry.COLUMN_INVENTORY_IMAGE };
 
         // This loader will execute the ContentProvider's query method on a background thread
         return new CursorLoader(this,   // Parent activity context
@@ -328,6 +356,7 @@ public class EditorActivity extends AppCompatActivity implements
             int supplierColumnIndex = cursor.getColumnIndex(InventoryEntry.COLUMN_INVENTORY_SUPPLIER);
             int emailColumnIndex = cursor.getColumnIndex(InventoryEntry.COLUMN_INVENTORY_EMAIL);
             int quantityColumnIndex = cursor.getColumnIndex(InventoryEntry.COLUMN_INVENTORY_QUANTITY);
+            int imageColumnIndex = cursor.getColumnIndex(InventoryEntry.COLUMN_INVENTORY_IMAGE);
 
             // Extract out the value from the Cursor for the given column index
             String name = cursor.getString(nameColumnIndex);
@@ -335,6 +364,7 @@ public class EditorActivity extends AppCompatActivity implements
             String supplier = cursor.getString(supplierColumnIndex);
             String email = cursor.getString(emailColumnIndex);
             int quantity = cursor.getInt(quantityColumnIndex);
+            String image = cursor.getString(imageColumnIndex);
 
             // Update the views on the screen with the values from the database
             mNameEditText.setText(name);
@@ -342,6 +372,8 @@ public class EditorActivity extends AppCompatActivity implements
             mSupplierEditText.setText(supplier);
             mEmailEditText.setText(email);
             mQuantityEditText.setText(Integer.toString(quantity));
+            mImageUri = parse(image);
+            mProductImageView.setImageURI(mImageUri);
         }
     }
 
@@ -435,5 +467,34 @@ public class EditorActivity extends AppCompatActivity implements
 
         // Close the activity
         finish();
+    }
+
+    public void addImage(View view) {
+        Intent intent = new Intent();
+
+        if (Build.VERSION.SDK_INT < 19) {
+            intent = new Intent(Intent.ACTION_GET_CONTENT);
+        } else {
+            intent = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+            intent.addCategory(Intent.CATEGORY_OPENABLE);
+        }
+        intent.setType("image/*");
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), IMAGE_CODE);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == IMAGE_CODE && (resultCode == RESULT_OK)) {
+            try {
+                mImageUri = data.getData();
+                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), mImageUri);
+                mProductImageView.setImageBitmap(bitmap);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

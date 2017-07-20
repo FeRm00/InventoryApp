@@ -10,6 +10,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -58,6 +59,21 @@ public class DetailActivity extends AppCompatActivity implements
     */
     private static final int DETAIL_INVENTORY_LOADER = 0;
 
+    /*
+    * TextView to show the units to decrease or increase the current stock
+    */
+    private  TextView mStockTextView;
+
+    /*
+    * Switch to decrease or increase the quantity of the products in the inventory
+    */
+    private Switch mSwitchCheck;
+
+    /*
+    * Variable to modify the stock regarding the quantity on the TextView.
+    */
+    private int mNewStock = 0;
+
         @Override
         protected void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -69,12 +85,15 @@ public class DetailActivity extends AppCompatActivity implements
             mSupplierTextView = (TextView) findViewById(R.id.view_product_supplier);
             mEmailTextView = (TextView) findViewById(R.id.view_product_email);
             mQuantityTextView = (TextView) findViewById(R.id.view_product_quantity);
+            //TextView for modify the stock
+            mStockTextView = (TextView) findViewById((R.id.view_adjust_stock));
+            //Switch for decrease or increase quantity
+            mSwitchCheck = (Switch) findViewById(R.id.switchAdjust);
 
             // Receive Uri data from intent
             Intent intent = getIntent();
             mCurrentProductUri = intent.getData();
             if (mCurrentProductUri != null) {
-                Toast.makeText(this, "Starting Loader", Toast.LENGTH_SHORT).show();
                 // Kick off LoaderManager
                 getLoaderManager().initLoader(DETAIL_INVENTORY_LOADER, null, this);
             }
@@ -83,7 +102,6 @@ public class DetailActivity extends AppCompatActivity implements
 
         @Override
         public Loader<Cursor> onCreateLoader ( int id, Bundle args){
-            Toast.makeText(this, "onCreateLoader", Toast.LENGTH_SHORT).show();
             String[] projection = {
                     InventoryEntry._ID,
                     InventoryEntry.COLUMN_INVENTORY_NAME,
@@ -102,7 +120,6 @@ public class DetailActivity extends AppCompatActivity implements
 
         @Override
         public void onLoadFinished (Loader < Cursor > loader, Cursor cursor){
-            Toast.makeText(this, "onLoadFinished", Toast.LENGTH_SHORT).show();
             // Proceed with moving to the first row of the cursor and reading data from it
             // (This should be the only row in the cursor)
             if (cursor.moveToFirst()) {
@@ -119,8 +136,6 @@ public class DetailActivity extends AppCompatActivity implements
                 String supplier = cursor.getString(supplierColumnIndex);
                 String email = cursor.getString(emailColumnIndex);
                 int quantity = cursor.getInt(quantityColumnIndex);
-
-                Toast.makeText(this, name, Toast.LENGTH_SHORT).show();
 
                 // Update the views on the screen with the values from the database
                 mNameTextView.setText(name);
@@ -142,26 +157,57 @@ public class DetailActivity extends AppCompatActivity implements
         }
 
         /*
-        / Sell a unit of the product and decrease de quantity by 1.
+        / Adjust the current stock with the quantity in the TextView view_adjust_stock
          */
-        public void sellStock (View view) {
-        int newStock = Integer.parseInt(mQuantityTextView.getText().toString());
+        public void adjustStock (View view) {
+            int currentStock = Integer.parseInt(mQuantityTextView.getText().toString());
+            int updateStock;
 
-            if (newStock > 0) {
-                newStock = newStock - 1;
+            if(mSwitchCheck.isChecked()) {
+                updateStock = currentStock + mNewStock;
+            } else if (currentStock - mNewStock > 0){
+                updateStock = currentStock - mNewStock;
             } else {
-                newStock = 0;
+                updateStock = 0;
             }
+
             //Update in the data base the new value
             ContentValues values = new ContentValues();
-            values.put(InventoryEntry.COLUMN_INVENTORY_QUANTITY, newStock);
+            values.put(InventoryEntry.COLUMN_INVENTORY_QUANTITY, updateStock);
             int numRowsUpdated = getContentResolver().update(mCurrentProductUri, values, null, null);
-
         }
+
+        /*
+        * Decrease de quantity on the view_adjust_stock
+        */
+        public void actionDecrease (View view) {
+            if(mCurrentProductUri != null) {
+                if (mNewStock > 0) {
+                    mNewStock --;
+                    mStockTextView.setText(String.valueOf(mNewStock));
+                } else {
+                    mNewStock = 0;
+                    mStockTextView.setText(String.valueOf(mNewStock));
+                    Toast.makeText(this, getString(R.string.toast_invalid_quantity),
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+
+        /*
+        * Decrease de quantity on the view_adjust_stock
+        */
+        public void actionIncrease (View view) {
+            if(mCurrentProductUri != null) {
+                    mNewStock ++;
+                    mStockTextView.setText(String.valueOf(mNewStock));
+            }
+        }
+
         /*
         * Order a new stock to the supplier with the email saved in the inventory data base.
         */
-         public void orderStock (View view) {
+         public void sendEmail (View view) {
              Intent intent = new Intent(Intent.ACTION_SEND);
              intent.setData(Uri.parse("mailto:"));
              intent.setType("text/plain");
@@ -169,5 +215,13 @@ public class DetailActivity extends AppCompatActivity implements
              intent.putExtra(Intent.EXTRA_SUBJECT, mSupplierTextView.getText().toString());
 
              startActivity(Intent.createChooser(intent, "Send Email"));
+        }
+
+        public void stateMessage (View view) {
+            if (mSwitchCheck.isChecked()) {
+                Toast.makeText(this, getString(R.string.switch_increase), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, getString(R.string.switch_decrease), Toast.LENGTH_SHORT).show();
+            }
         }
     }

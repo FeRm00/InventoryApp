@@ -1,6 +1,7 @@
 package com.kikisnight.inventoryapp;
 
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -10,11 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import static android.R.attr.id;
+import static android.net.Uri.parse;
 
 import com.kikisnight.inventoryapp.data.InventoryContract.InventoryEntry;
-
 
 /**
  * {@link InventoryCursorAdapter} is an adapter for a list or grid view
@@ -64,24 +66,32 @@ public class InventoryCursorAdapter extends CursorAdapter {
         TextView priceTextView = (TextView) view.findViewById(R.id.price);
         TextView supplierTextView = (TextView) view.findViewById(R.id.supplier);
         TextView quantityTextView = (TextView) view.findViewById(R.id.quantity);
+        ImageView imageImageView = (ImageView) view.findViewById(R.id.image);
 
         // Find the columns of inventory attributes that we're interested in
         int nameColumnIndex = cursor.getColumnIndex(InventoryEntry.COLUMN_INVENTORY_NAME);
         int priceColumnIndex = cursor.getColumnIndex(InventoryEntry.COLUMN_INVENTORY_PRICE);
         int supplierColumnIndex = cursor.getColumnIndex(InventoryEntry.COLUMN_INVENTORY_SUPPLIER);
         int quantityColumnIndex = cursor.getColumnIndex(InventoryEntry.COLUMN_INVENTORY_QUANTITY);
+        int imageColumnIndex = cursor.getColumnIndex(InventoryEntry.COLUMN_INVENTORY_IMAGE);
 
         // Read the inventory attributes from the Cursor for the current product
         String inventoryName = cursor.getString(nameColumnIndex);
         double inventoryPrice = cursor.getDouble(priceColumnIndex);
         String inventorySupplier = cursor.getString(supplierColumnIndex);
-        int inventoryQuantity = cursor.getInt(quantityColumnIndex);
+        final int inventoryQuantity = cursor.getInt(quantityColumnIndex);
+        final String inventoryImage = cursor.getString(imageColumnIndex);
+        final Uri uri = ContentUris.withAppendedId(InventoryEntry.CONTENT_URI, cursor.getInt(cursor.getColumnIndexOrThrow(InventoryEntry._ID)));
+
 
         // Update the TextViews with the attributes for the current product
         nameTextView.setText(inventoryName);
         priceTextView.setText(context.getString(R.string.price) + " " + inventoryPrice + "€");
         supplierTextView.setText(context.getString(R.string.supplier) + " " + inventorySupplier);
         quantityTextView.setText(context.getString(R.string.stock) + " " + inventoryQuantity);
+
+        Uri imageUri = parse(inventoryImage);
+        imageImageView.setImageURI(imageUri);
 
         //Find detail_activity button
         Button detailActivity = (Button) view.findViewById(R.id.detail_activity);
@@ -90,9 +100,28 @@ public class InventoryCursorAdapter extends CursorAdapter {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, DetailActivity.class);
-                Uri currentProductUri = ContentUris.withAppendedId(InventoryEntry.CONTENT_URI, id);
-                intent.setData(currentProductUri);
+
+                intent.setData(uri);
                 context.startActivity(intent);
+            }
+        });
+
+        //Find decrease_one_unit button
+        Button decreaseOneUnit = (Button) view.findViewById(R.id.decrease_one_unit);
+        decreaseOneUnit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                int newStock = inventoryQuantity;
+                if (inventoryQuantity > 0) {
+                    newStock--;
+                } else {
+                    newStock = 0;
+                }
+                //Update in the data base the new value
+                ContentValues values = new ContentValues();
+                values.put(InventoryEntry.COLUMN_INVENTORY_QUANTITY, newStock);
+                Uri currentProductUri = ContentUris.withAppendedId(InventoryEntry.CONTENT_URI, id);
+                int numRowsUpdated = context.getContentResolver().update(uri, values, null, null);
             }
         });
     }

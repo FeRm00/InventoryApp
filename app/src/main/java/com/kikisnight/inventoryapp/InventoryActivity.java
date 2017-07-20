@@ -19,7 +19,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import com.kikisnight.inventoryapp.data.InventoryContract.InventoryEntry;
 
-
 /**
  * Displays list of products from the inventory that were entered and stored in the app.
  */
@@ -44,7 +43,6 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
                 startActivity(intent);
             }
         });
-
 
         //Kick off the ListView
         startListView();
@@ -80,7 +78,8 @@ public class InventoryActivity extends AppCompatActivity implements LoaderManage
                 InventoryEntry.COLUMN_INVENTORY_NAME,
                 InventoryEntry.COLUMN_INVENTORY_PRICE,
                 InventoryEntry.COLUMN_INVENTORY_SUPPLIER,
-                InventoryEntry.COLUMN_INVENTORY_QUANTITY
+                InventoryEntry.COLUMN_INVENTORY_QUANTITY,
+                InventoryEntry.COLUMN_INVENTORY_IMAGE
         };
 
         //This loader will execute the ContentProvider's query method on background thread

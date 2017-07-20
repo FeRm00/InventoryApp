@@ -8,4 +8,10 @@
 
     <!-- Text Dimensions -->
     <dimen name="tittle">20sp</dimen>
+
+    <!-- Small buttons dimensions -->
+    <dimen name="squareButton">40dp</dimen>
+
+    <!-- Image dimensions for the list_view -->
+    <dimen name="squareImage"> 60dp</dimen>
 </resources>
